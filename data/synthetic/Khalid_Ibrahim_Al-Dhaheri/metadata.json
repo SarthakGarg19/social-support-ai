@@ -1,0 +1,41 @@
+{
+  "name": "Khalid Ibrahim Al-Dhaheri",
+  "email": "khalid.dhaheri@email.com",
+  "phone": "+971-50-567-8901",
+  "emirates_id": "784567890123-5",
+  "dob": "18-Jan-1987",
+  "employment": {
+    "position": "Operations Manager",
+    "company": "DP World",
+    "monthly_salary": 12500,
+    "freelance_income": 3000,
+    "total_monthly_income": 15500,
+    "employment_status": "Employed",
+    "years_experience": 9
+  },
+  "family": {
+    "family_size": 6
+  },
+  "financial": {
+    "bank_balance": 55000,
+    "total_assets": 1515000,
+    "total_liabilities": 273000,
+    "net_worth": 1242000,
+    "asset_liability_ratio": 5.55
+  },
+  "credit": {
+    "credit_score": 740
+  },
+  "eligibility": {
+    "income_eligible": false,
+    "notes": "Monthly income: AED 15,500"
+  },
+  "documents": [
+    "bank_statement.pdf",
+    "credit_report.pdf",
+    "resume.docx",
+    "assets_liabilities.xlsx",
+    "emirates_id.png"
+  ],
+  "generated_at": "2026-01-28T00:17:15.682587"
+}

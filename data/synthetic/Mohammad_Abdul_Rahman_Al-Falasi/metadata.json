@@ -1,0 +1,41 @@
+{
+  "name": "Mohammad Abdul Rahman Al-Falasi",
+  "email": "mohammad.falasi@email.com",
+  "phone": "+971-50-345-6789",
+  "emirates_id": "784345678901-3",
+  "dob": "10-Dec-1988",
+  "employment": {
+    "position": "Business Analyst",
+    "company": "PwC Middle East",
+    "monthly_salary": 9500,
+    "freelance_income": 1500,
+    "total_monthly_income": 11000,
+    "employment_status": "Employed",
+    "years_experience": 7
+  },
+  "family": {
+    "family_size": 5
+  },
+  "financial": {
+    "bank_balance": 32000,
+    "total_assets": 1097000,
+    "total_liabilities": 215000,
+    "net_worth": 882000,
+    "asset_liability_ratio": 5.1
+  },
+  "credit": {
+    "credit_score": 680
+  },
+  "eligibility": {
+    "income_eligible": true,
+    "notes": "Monthly income: AED 11,000"
+  },
+  "documents": [
+    "bank_statement.pdf",
+    "credit_report.pdf",
+    "resume.docx",
+    "assets_liabilities.xlsx",
+    "emirates_id.png"
+  ],
+  "generated_at": "2026-01-28T00:17:15.259287"
+}

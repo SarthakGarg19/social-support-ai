@@ -1,0 +1,41 @@
+{
+  "name": "Fatima Hassan Al-Ketbi",
+  "email": "fatima.ketbi@email.com",
+  "phone": "+971-50-234-5678",
+  "emirates_id": "784234567890-2",
+  "dob": "22-Jul-1990",
+  "employment": {
+    "position": "Software Developer",
+    "company": "Microsoft UAE",
+    "monthly_salary": 11000,
+    "freelance_income": 2000,
+    "total_monthly_income": 13000,
+    "employment_status": "Employed",
+    "years_experience": 6
+  },
+  "family": {
+    "family_size": 3
+  },
+  "financial": {
+    "bank_balance": 45000,
+    "total_assets": 465000,
+    "total_liabilities": 118000,
+    "net_worth": 347000,
+    "asset_liability_ratio": 3.94
+  },
+  "credit": {
+    "credit_score": 750
+  },
+  "eligibility": {
+    "income_eligible": true,
+    "notes": "Monthly income: AED 13,000"
+  },
+  "documents": [
+    "bank_statement.pdf",
+    "credit_report.pdf",
+    "resume.docx",
+    "assets_liabilities.xlsx",
+    "emirates_id.png"
+  ],
+  "generated_at": "2026-01-28T00:17:15.057525"
+}

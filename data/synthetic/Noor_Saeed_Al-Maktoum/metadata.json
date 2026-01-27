@@ -1,0 +1,41 @@
+{
+  "name": "Noor Saeed Al-Maktoum",
+  "email": "noor.maktoum@email.com",
+  "phone": "+971-50-456-7890",
+  "emirates_id": "784456789012-4",
+  "dob": "05-Aug-1992",
+  "employment": {
+    "position": "Marketing Manager",
+    "company": "Emirates NBD",
+    "monthly_salary": 10500,
+    "freelance_income": 800,
+    "total_monthly_income": 11300,
+    "employment_status": "Employed",
+    "years_experience": 5
+  },
+  "family": {
+    "family_size": 2
+  },
+  "financial": {
+    "bank_balance": 38000,
+    "total_assets": 463000,
+    "total_liabilities": 175000,
+    "net_worth": 288000,
+    "asset_liability_ratio": 2.65
+  },
+  "credit": {
+    "credit_score": 710
+  },
+  "eligibility": {
+    "income_eligible": true,
+    "notes": "Monthly income: AED 11,300"
+  },
+  "documents": [
+    "bank_statement.pdf",
+    "credit_report.pdf",
+    "resume.docx",
+    "assets_liabilities.xlsx",
+    "emirates_id.png"
+  ],
+  "generated_at": "2026-01-28T00:17:15.460118"
+}

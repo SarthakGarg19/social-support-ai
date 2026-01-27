@@ -1,0 +1,41 @@
+{
+  "name": "Ahmed Mohammed Al-Mansouri",
+  "email": "ahmed.mansouri@email.com",
+  "phone": "+971-50-123-4567",
+  "emirates_id": "784123456789-1",
+  "dob": "15-Mar-1985",
+  "employment": {
+    "position": "Senior Sales Manager",
+    "company": "Al-Fardan Retail Group",
+    "monthly_salary": 8500,
+    "freelance_income": 1200,
+    "total_monthly_income": 9700,
+    "employment_status": "Employed",
+    "years_experience": 8
+  },
+  "family": {
+    "family_size": 4
+  },
+  "financial": {
+    "bank_balance": 27670,
+    "total_assets": 1272670,
+    "total_liabilities": 252500,
+    "net_worth": 1020170,
+    "asset_liability_ratio": 5.04
+  },
+  "credit": {
+    "credit_score": 720
+  },
+  "eligibility": {
+    "income_eligible": true,
+    "notes": "Monthly income: AED 9,700"
+  },
+  "documents": [
+    "bank_statement.pdf",
+    "credit_report.pdf",
+    "resume.docx",
+    "assets_liabilities.xlsx",
+    "emirates_id.png"
+  ],
+  "generated_at": "2026-01-28T00:17:14.871654"
+}
