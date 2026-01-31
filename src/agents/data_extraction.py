@@ -355,7 +355,7 @@ Resume text:
 Respond ONLY with a JSON object.
 """
             response = ollama.generate(
-                model=getattr(settings, 'ollama_model', 'llama3'),
+                model=settings.ollama_model,
                 prompt=prompt
             )
             import json
@@ -370,43 +370,96 @@ Respond ONLY with a JSON object.
             }
 
     def _extract_assets_liabilities(self, file_path: str) -> Dict[str, Any]:
-        """Extract data from assets/liabilities Excel file."""
+        """Extract data from assets/liabilities Excel file (custom row-label format).
+        Handles files where assets and liabilities are row labels, not columns.
+        """
         try:
-            df = pd.read_excel(file_path)
-            
-            # Assume standard format with 'Asset', 'Liability', 'Amount' columns
+            df = pd.read_excel(file_path, header=None)
+            raw_text = df.to_string()
             total_assets = 0.0
             total_liabilities = 0.0
-            
-            # Try to identify asset and liability rows
-            if 'Type' in df.columns and 'Amount' in df.columns:
-                assets_df = df[df['Type'].str.lower().str.contains('asset', na=False)]
-                liabilities_df = df[df['Type'].str.lower().str.contains('liability', na=False)]
-                
-                total_assets = assets_df['Amount'].sum()
-                total_liabilities = liabilities_df['Amount'].sum()
-            else:
-                # Fallback: assume first column is assets, second is liabilities
-                if len(df.columns) >= 2:
-                    total_assets = df.iloc[:, 0].sum()
-                    total_liabilities = df.iloc[:, 1].sum()
-            
-            # Calculate ratio
-            asset_liability_ratio = total_assets / total_liabilities if total_liabilities > 0 else float('inf')
-            net_worth = total_assets - total_liabilities
-            
+            net_worth = None
+            asset_liability_ratio = None
+            assets = {}
+            liabilities = {}
+            # Find section indices
+            assets_start = liabilities_start = assets_end = liabilities_end = None
+
+            for i, row in df.iterrows():
+                label = str(row[0]).strip().upper() if pd.notnull(row[0]) else ""
+                if label == "ASSETS":
+                    assets_start = i + 1
+                elif label == "LIABILITIES":
+                    liabilities_start = i + 1
+                elif label.startswith("TOTAL ASSET"):
+                    assets_end = i
+                elif label.startswith("TOTAL LIABILIT"):
+                    liabilities_end = i
+                elif label == "NET WORTH":
+                    try:
+                        net_worth = float(row[1])
+                    except Exception:
+                        pass
+                elif label.startswith("ASSET-LIABILITY"):
+                    try:
+                        asset_liability_ratio = float(row[1])
+                    except Exception:
+                        pass
+            # Extract assets
+            if assets_start is not None and assets_end is not None:
+                for i in range(assets_start, assets_end):
+                    label = str(df.iloc[i, 0]).strip()
+                    value = df.iloc[i, 1]
+                    if label and pd.notnull(value):
+                        try:
+                            assets[label] = float(value)
+                        except Exception:
+                            continue
+                total_assets = sum(assets.values())
+            # Extract liabilities
+            if liabilities_start is not None and liabilities_end is not None:
+                for i in range(liabilities_start, liabilities_end):
+                    label = str(df.iloc[i, 0]).strip()
+                    value = df.iloc[i, 1]
+                    if label and pd.notnull(value):
+                        try:
+                            liabilities[label] = float(value)
+                        except Exception:
+                            continue
+                total_liabilities = sum(liabilities.values())
+            # Fallback: try to get totals from TOTAL rows if present
+            for i, row in df.iterrows():
+                label = str(row[0]).strip().upper() if pd.notnull(row[0]) else ""
+                if label.startswith("TOTAL ASSET"):
+                    try:
+                        total_assets = float(row[1])
+                    except Exception:
+                        pass
+                if label.startswith("TOTAL LIABILIT"):
+                    try:
+                        total_liabilities = float(row[1])
+                    except Exception:
+                        pass
+            # Calculate net worth and ratio if not found
+            if net_worth is None:
+                net_worth = total_assets - total_liabilities
+            if asset_liability_ratio is None:
+                asset_liability_ratio = total_assets / total_liabilities if total_liabilities > 0 else float('inf')
             return {
-                'raw_text': df.to_string(),
+                'raw_text': raw_text,
+                'assets': assets,
+                'liabilities': liabilities,
                 'total_assets': float(total_assets),
                 'total_liabilities': float(total_liabilities),
                 'net_worth': float(net_worth),
                 'asset_liability_ratio': float(asset_liability_ratio),
-                'summary': f'Assets: AED {total_assets:,.2f}, Liabilities: AED {total_liabilities:,.2f}'
+                'summary': f'Assets: AED {total_assets:,.2f}, Liabilities: AED {total_liabilities:,.2f}, Net Worth: AED {net_worth:,.2f}, Ratio: {asset_liability_ratio:.2f}'
             }
-            
         except Exception as e:
             return {
                 'raw_text': '',
+                'assets': {},
+                'liabilities': {},
                 'total_assets': 0.0,
                 'total_liabilities': 0.0,
                 'net_worth': 0.0,
