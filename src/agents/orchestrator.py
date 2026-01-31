@@ -291,6 +291,7 @@ class OrchestratorAgent(BaseAgent):
         try:
             # Prepare applicant data
             applicant_data = {
+                'applicant_name': state["applicant_name"] if "applicant_name" in state else "Unknown",
                 'monthly_income': state['extracted_data'].get('monthly_income', 0),
                 'employment_status': state['extracted_data'].get('employment_status', 'unknown'),
                 'family_size': state['applicant_data'].get('family_size', 1),
@@ -344,6 +345,7 @@ class OrchestratorAgent(BaseAgent):
         try:
             # Prepare data
             applicant_data = {
+                'applicant_name': state["applicant_name"] if "applicant_name" in state else "Unknown",
                 'monthly_income': state['extracted_data'].get('monthly_income', 0),
                 'employment_status': state['extracted_data'].get('employment_status', 'unknown'),
                 'family_size': state['applicant_data'].get('family_size', 1)

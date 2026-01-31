@@ -226,10 +226,10 @@ class RecommendationAgent(BaseAgent):
         """
         try:
             prompt = f"""
-You are a compassionate career counselor for a government social support program.
+You are a compassionate career counselor named {self.name} for a government social support program.
 
 Applicant Profile:
-- Applicant Name: {applicant_data.get('name', 'Unknown')}
+- Applicant Name: {applicant_data.get('applicant_name', 'Unknown')}
 - Employment Status: {applicant_data.get('employment_status', 'unknown')}
 - Monthly Income: AED {applicant_data.get('monthly_income', 0):,.2f}
 - Family Size: {applicant_data.get('family_size', 1)}
