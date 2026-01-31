@@ -523,7 +523,7 @@ class OrchestratorAgent(BaseAgent):
             return final_state['final_decision']
             
         except Exception as e:
-            print(f"\n✗ WORKFLOW FAILED: {str(e)}")
+            print(f"\nX WORKFLOW FAILED: {str(e)}")
             return {
                 'applicant_id': applicant_id,
                 'decision': 'ERROR',

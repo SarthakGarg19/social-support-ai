@@ -28,8 +28,6 @@ def init_langfuse():
             return None
     except Exception:
         return None
-        return None
-
 
 def trace_llm_call(agent_name: str, prompt: str, model: str = "llama3.2"):
     """
@@ -187,8 +185,8 @@ def log_eligibility_decision(
             output={"decision": decision, "reasoning": reasoning}
         )
         
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"[LANGFUSE] Failed to log eligibility decision: {e}")
 
 
 def flush_langfuse():
@@ -196,8 +194,8 @@ def flush_langfuse():
     if langfuse_client:
         try:
             langfuse_client.flush()
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"[LANGFUSE] Failed to flush traces: {e}")
 
 
 # Initialize on module import

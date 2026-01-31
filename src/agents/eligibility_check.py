@@ -27,7 +27,6 @@ class EligibilityCheckAgent(BaseAgent):
     
     Capabilities:
     - Applies eligibility rules
-    - Uses ML classifier for scoring
     - Leverages LLM for reasoning
     - Retrieves relevant policies from knowledge base
     
@@ -95,7 +94,6 @@ class EligibilityCheckAgent(BaseAgent):
         ReAct Action:
         - Apply rule-based checks
         - Calculate weighted eligibility score
-        - Use ML classifier if available
         - Generate decision with confidence
         """
         applicant_data = state.context.get('applicant_data', {})
