@@ -67,6 +67,9 @@ class DataValidationAgent(BaseAgent):
         - Is the data complete within each document?
         - Are there inconsistencies across documents?
         - Are values within reasonable ranges?
+        - Check if employment status aligns with income reported.
+        - Verify asset/liability ratios.
+        - Flag any anomalies or missing information.
         
         Using LLM to perform deep semantic validation...
         """
@@ -91,7 +94,8 @@ class DataValidationAgent(BaseAgent):
             'completeness_score': 0.0,
             'issues': [],
             'warnings': [],
-            'validated_data': {}
+            'validated_data': {},
+            'requires_user_action': False  # New flag for critical user action
         }
         
         # Check completeness
@@ -134,6 +138,17 @@ class DataValidationAgent(BaseAgent):
             if ratio < 0:
                 validation_results['issues'].append("Asset-liability ratio cannot be negative")
                 validation_results['is_valid'] = False
+
+        # --- New: Employment/Income mismatch check ---
+        # If income is reported but employment status is not employed, flag for user action
+        employment_status = extracted_data.get('employment_status', '').lower()
+        has_income = extracted_data.get('monthly_income', 0) > 0
+        if has_income and employment_status not in ['employed', 'self-employed', 'business owner']:
+            validation_results['issues'].append(
+                "Income detected but employment status is not 'employed'. Please upload an updated resume or clarify employment status."
+            )
+            validation_results['is_valid'] = False
+            validation_results['requires_user_action'] = True
         
         # Use LLM for semantic validation
         if validation_results['completeness_score'] > 0.5:
@@ -224,44 +239,6 @@ Keep your response concise (2-3 sentences).
             formatted.append(f"- Family Size: {data['family_size']}")
         
         return "\n".join(formatted) if formatted else "No data available"
-    
-    def validate_cross_document_consistency(
-        self,
-        applicant_id: str
-    ) -> Dict[str, Any]:
-        """
-        Validate consistency across all applicant documents.
-        
-        This is a specialized method for comprehensive validation.
-        """
-        # Get applicant data
-        applicant = db_manager.get_applicant(applicant_id)
-        if not applicant:
-            return {
-                'success': False,
-                'error': 'Applicant not found'
-            }
-        
-        # Aggregate all extracted data
-        all_data = {}
-        
-        # This would retrieve all documents and their extracted data
-        # For prototype, we'll use simplified logic
-        
-        consistency_issues = []
-        
-        # Example: Check if income from bank statement matches employment status
-        if all_data.get('monthly_income', 0) > 10000 and all_data.get('employment_status') == 'unemployed':
-            consistency_issues.append(
-                "High income reported but employment status is 'unemployed'"
-            )
-        
-        return {
-            'success': True,
-            'consistent': len(consistency_issues) == 0,
-            'issues': consistency_issues
-        }
-
 
 # Global instance
 data_validation_agent = DataValidationAgent()

@@ -264,12 +264,13 @@ class OrchestratorAgent(BaseAgent):
     def _should_proceed_after_validation(self, state: WorkflowState) -> str:
         """
         Conditional edge: Decide whether to proceed after validation.
-        
-        This is a key decision point in the workflow.
-        Lower threshold to allow more applications through with partial data.
+        Ends workflow if validation fails or requires user action (e.g., employment/income mismatch).
         """
         validation_results = state.get('validation_results', {})
-        
+        # End if requires_user_action is set (critical validation failure)
+        if validation_results.get('requires_user_action', False):
+            print("\n[ORCHESTRATOR] ⚠️  User action required - ending workflow early")
+            return "end"
         # Proceed if validation passed or has any reasonable data (30%+)
         if validation_results.get('is_valid', False) or validation_results.get('completeness_score', 0) >= 0.3:
             return "proceed"

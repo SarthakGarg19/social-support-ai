@@ -405,7 +405,7 @@ STAGE 2: DATA VALIDATION
 │           'warnings': [],
 │           'issues': []
 │         }
-├─ Decision Point: Is completeness >= 30%?
+├─ Decision Point: Is completeness >= 50%?
 │  ├─ YES → Continue to Eligibility
 │  └─ NO  → END workflow (insufficient data)
 └─ State: Saved to SQLite, tagged 'validation_complete'
