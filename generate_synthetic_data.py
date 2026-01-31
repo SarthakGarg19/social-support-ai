@@ -70,10 +70,10 @@ APPLICANTS = [
         "emirates_id": "784234567890-2",
         "position": "Software Developer",
         "company": "Microsoft UAE",
-        "monthly_salary": 11000,
-        "freelance_income": 2000,
+        "monthly_salary": 0,
+        "freelance_income": 0,
         "family_size": 3,
-        "employment_status": "Employed",
+        "employment_status": "Unemployed",
         "bank_balance": 45000,
         "assets": {
             "cash": 45000,

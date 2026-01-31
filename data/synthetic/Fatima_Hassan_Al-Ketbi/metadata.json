@@ -7,10 +7,10 @@
   "employment": {
     "position": "Software Developer",
     "company": "Microsoft UAE",
-    "monthly_salary": 11000,
-    "freelance_income": 2000,
-    "total_monthly_income": 13000,
-    "employment_status": "Employed",
+    "monthly_salary": 0,
+    "freelance_income": 0,
+    "total_monthly_income": 0,
+    "employment_status": "Unemployed",
     "years_experience": 6
   },
   "family": {
@@ -28,7 +28,7 @@
   },
   "eligibility": {
     "income_eligible": true,
-    "notes": "Monthly income: AED 13,000"
+    "notes": "Monthly income: AED 0"
   },
   "documents": [
     "bank_statement.pdf",
@@ -37,5 +37,5 @@
     "assets_liabilities.xlsx",
     "emirates_id.png"
   ],
-  "generated_at": "2026-01-31T21:56:53.547832"
+  "generated_at": "2026-02-01T00:17:51.403246"
 }
