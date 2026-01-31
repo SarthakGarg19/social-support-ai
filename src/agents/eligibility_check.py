@@ -136,7 +136,7 @@ class EligibilityCheckAgent(BaseAgent):
             else:
                 financial_score = 10
         else:
-            financial_score = 15  # Has assets but no liabilities
+            financial_score = 5  # Has assets but no liabilities
         
         eligibility_score += financial_score
         factors.append(f"Financial Need Score: {financial_score}/20 (A/L Ratio: {ratio if liabilities > 0 else 'N/A'})")

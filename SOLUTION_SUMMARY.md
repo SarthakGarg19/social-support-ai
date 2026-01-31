@@ -147,8 +147,8 @@ APPLICANT SUBMISSION
 │  NODE 3: ELIGIBILITY CHECK AGENT             │
 │  ├─ Multi-factor scoring (100 points)       │
 │  │  ├─ Income (30 pts)                      │
-│  │  ├─ Employment (25 pts)                  │
-│  │  ├─ Family Size (15 pts)                 │
+│  │  ├─ Employment (20 pts)                  │
+│  │  ├─ Family Size (20 pts)                 │
 │  │  ├─ Financial Need (20 pts)              │
 │  │  └─ Credit Score (10 pts)                │
 │  ├─ Query knowledge base via embeddings    │

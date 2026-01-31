@@ -310,6 +310,8 @@ class DataExtractionAgent(BaseAgent):
             summary += f" at {current_employer}"
         if current_job_period:
             summary += f" ({current_job_period})"
+        if 'reasoning' in llm_result:
+            summary += f" | Reasoning: {llm_result['reasoning']}"
         if 'llm_error' in llm_result:
             summary += f" | LLM error: {llm_result['llm_error']}"
 
@@ -337,6 +339,7 @@ You are an expert resume parser. Given the following resume text, extract the fo
 - current_job_title: (if employed, the most recent/current job title, else null)
 - current_employer: (if employed, the most recent/current employer, else null)
 - current_job_period: (if employed, the period for the current job, else null)
+- reasoning: brief explanation of how you determined the employment status
 
 Resume text:
 {resume_text}

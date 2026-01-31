@@ -68,7 +68,7 @@ ELIGIBILITY_CRITERIA = {
     "max_income_threshold": 15000,  # Monthly income in AED
     "min_family_size_for_bonus": 3,
     "asset_liability_ratio_threshold": 0.5,
-    "credit_score_minimum": 300,
+    "credit_score_minimum": 500,
     "employment_weights": {
         "employed": 0.8,
         "self_employed": 0.7,

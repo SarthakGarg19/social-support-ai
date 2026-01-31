@@ -269,17 +269,6 @@ Be empathetic and practical.
         
         return "\n".join(formatted) if formatted else "General support programs"
     
-    def _format_programs(self, programs: List[str]) -> str:
-        """Format knowledge base programs."""
-        if not programs:
-            return "Using standard program catalog"
-        
-        formatted = []
-        for i, program in enumerate(programs, 1):
-            formatted.append(f"{i}. {program[:150]}...")
-        
-        return "\n".join(formatted)
-    
     def _create_next_steps(self, recommendations: Dict[str, Any]) -> List[str]:
         """Create actionable next steps for applicant."""
         steps = []
