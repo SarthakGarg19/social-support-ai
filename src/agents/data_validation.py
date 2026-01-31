@@ -139,7 +139,7 @@ class DataValidationAgent(BaseAgent):
                 validation_results['issues'].append("Asset-liability ratio cannot be negative")
                 validation_results['is_valid'] = False
 
-        # --- New: Employment/Income mismatch check ---
+        # Employment/Income mismatch check
         # If income is reported but employment status is not employed, flag for user action
         employment_status = extracted_data.get('employment_status', '').lower()
         has_income = extracted_data.get('monthly_income', 0) > 0
@@ -156,13 +156,13 @@ class DataValidationAgent(BaseAgent):
             validation_results['llm_insights'] = llm_validation
         
         # Mark as critical if completeness is too low
-        if validation_results['completeness_score'] < 0.3:
+        if validation_results['completeness_score'] < 0.5:
             validation_results['is_valid'] = False
             validation_results['issues'].append(
                 f"Insufficient data: only {validation_results['completeness_score']*100:.0f}% complete"
             )
         else:
-            # Allow processing with warnings if at least 30% of data is present
+            # Allow processing with warnings if at least 50% of data is present
             validation_results['is_valid'] = True
         
         # Log to Langfuse

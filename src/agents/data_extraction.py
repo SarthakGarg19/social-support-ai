@@ -301,35 +301,74 @@ class DataExtractionAgent(BaseAgent):
         }
     
     def _extract_resume(self, file_path: str) -> Dict[str, Any]:
-        """Extract data from resume PDF/DOCX."""
+        """Extract data from resume PDF/DOCX using LLM for employment status and job details."""
         if file_path.endswith('.pdf'):
             text = self._extract_pdf_text(file_path)
         elif file_path.endswith('.docx'):
             text = self._extract_docx_text(file_path)
         else:
             text = ""
-        
-        # Simple keyword-based employment detection
-        employment_keywords = ['employed', 'working', 'current position', 'job']
-        unemployed_keywords = ['unemployed', 'seeking', 'looking for']
-        
-        is_employed = any(keyword in text.lower() for keyword in employment_keywords)
-        is_unemployed = any(keyword in text.lower() for keyword in unemployed_keywords)
-        
-        if is_employed:
-            employment_status = 'employed'
-        elif is_unemployed:
-            employment_status = 'unemployed'
-        else:
-            employment_status = 'unknown'
-        
+
+        llm_result = self._llm_validate(text)
+        employment_status = llm_result.get('employment_status', 'unknown')
+        current_job_title = llm_result.get('current_job_title')
+        current_employer = llm_result.get('current_employer')
+        current_job_period = llm_result.get('current_job_period')
+        summary = f"Resume processed, status: {employment_status}"
+        if current_job_title:
+            summary += f" | Current Job: {current_job_title}"
+        if current_employer:
+            summary += f" at {current_employer}"
+        if current_job_period:
+            summary += f" ({current_job_period})"
+        if 'llm_error' in llm_result:
+            summary += f" | LLM error: {llm_result['llm_error']}"
+
         return {
             'raw_text': text,
             'employment_status': employment_status,
+            'current_job_title': current_job_title,
+            'current_employer': current_employer,
+            'current_job_period': current_job_period,
             'text_length': len(text),
-            'summary': f'Resume processed, status: {employment_status}'
+            'summary': summary
         }
-    
+
+    def _llm_validate(self, resume_text: str) -> dict:
+        """
+        Use local LLM to extract employment status and job details from resume text.
+        Returns a dict with keys: employment_status, current_job_title, current_employer, current_job_period.
+        """
+        try:
+            import ollama
+            from ..config import settings
+            prompt = f"""
+You are an expert resume parser. Given the following resume text, extract the following fields as JSON:
+- employment_status: 'employed' or 'unemployed'
+- current_job_title: (if employed, the most recent/current job title, else null)
+- current_employer: (if employed, the most recent/current employer, else null)
+- current_job_period: (if employed, the period for the current job, else null)
+
+Resume text:
+{resume_text}
+
+Respond ONLY with a JSON object.
+"""
+            response = ollama.generate(
+                model=getattr(settings, 'ollama_model', 'llama3'),
+                prompt=prompt
+            )
+            import json
+            return json.loads(response['response'])
+        except Exception as e:
+            return {
+                'employment_status': 'unknown',
+                'current_job_title': None,
+                'current_employer': None,
+                'current_job_period': None,
+                'llm_error': str(e)
+            }
+
     def _extract_assets_liabilities(self, file_path: str) -> Dict[str, Any]:
         """Extract data from assets/liabilities Excel file."""
         try:
