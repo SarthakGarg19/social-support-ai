@@ -521,7 +521,7 @@ class OrchestratorAgent(BaseAgent):
             print(f"Decision: {final_state['final_decision'].get('decision', 'UNKNOWN')}")
             print(f"Errors: {len(final_state.get('errors', []))}")
             
-            return final_state['final_decision']
+            return final_state['final_decision'], final_state['errors']
             
         except Exception as e:
             print(f"\nX WORKFLOW FAILED: {str(e)}")

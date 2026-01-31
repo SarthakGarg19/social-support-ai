@@ -49,6 +49,8 @@ if 'processing' not in st.session_state:
     st.session_state.processing = False
 if 'decision' not in st.session_state:
     st.session_state.decision = None
+if 'errors' not in st.session_state:
+    st.session_state.errors = None
 
 
 def chat_with_llm(prompt):
@@ -82,19 +84,24 @@ def process_application_background(applicant_data, documents):
         st.session_state.applicant_id = applicant_id
         
         # Process through orchestrator
-        final_decision = orchestrator.process_application(
+        final_decision, errors = orchestrator.process_application(
             applicant_id=applicant_id,
             applicant_data=applicant_data,
             documents=documents
         )
         
         st.session_state.decision = final_decision
+        st.session_state.errors = errors
         st.session_state.processing = False
         
     except Exception as e:
         st.session_state.processing = False
         st.session_state.decision = {
             'decision': 'ERROR',
+            'error': str(e)
+        }
+        st.session_state.errors = {
+            'errors': 'Not processed due to error',
             'error': str(e)
         }
 
@@ -272,6 +279,34 @@ if st.session_state.decision:
         file_name=f"application_results_{applicant_id}.json",
         mime="application/json"
     )
+
+# Display errors if available and non-empty
+if st.session_state.errors:
+    errors = st.session_state.errors
+    # If errors is a dict with 'errors' key as a list or string
+    error_list = []
+    if isinstance(errors, dict):
+        if isinstance(errors.get('errors'), list):
+            error_list = errors['errors']
+        elif isinstance(errors.get('errors'), str):
+            error_list = [errors['errors']]
+        else:
+            # If errors dict itself is a list
+            if isinstance(errors, list):
+                error_list = errors
+    elif isinstance(errors, list):
+        error_list = errors
+    # Only display if non-empty
+    if error_list:
+        st.divider()
+        st.header("❌ Application Errors")
+        for error in error_list:
+            st.error(error)
+    # Also show any top-level error string
+    if isinstance(errors, dict) and errors.get('error'):
+        st.divider()
+        st.header("❌ Application Error Detail")
+        st.error(errors['error'])
 
 # Processing indicator
 if st.session_state.processing:
