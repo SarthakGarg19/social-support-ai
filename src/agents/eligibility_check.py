@@ -109,21 +109,21 @@ class EligibilityCheckAgent(BaseAgent):
         else:
             factors.append(f"Income Score: 0/30 (Exceeds threshold of AED {income_threshold:,})")
         
-        # Factor 2: Employment Status (25 points)
+        # Factor 2: Employment Status (20 points)
         employment = applicant_data.get('employment_status', 'unknown')
         employment_weights = ELIGIBILITY_CRITERIA['employment_weights']
-        employment_score = employment_weights.get(employment, 0.5) * 25
+        employment_score = employment_weights.get(employment, 0.5) * 20
         eligibility_score += employment_score
-        factors.append(f"Employment Score: {employment_score:.1f}/25 (Status: {employment})")
+        factors.append(f"Employment Score: {employment_score:.1f}/20 (Status: {employment})")
         
-        # Factor 3: Family Size (15 points)
+        # Factor 3: Family Size (20 points)
         family_size = applicant_data.get('family_size', 1)
         if family_size >= ELIGIBILITY_CRITERIA['min_family_size_for_bonus']:
-            family_score = 15
+            family_score = 20
         else:
-            family_score = 10
+            family_score = 5
         eligibility_score += family_score
-        factors.append(f"Family Score: {family_score}/15 (Size: {family_size})")
+        factors.append(f"Family Score: {family_score}/20 (Size: {family_size})")
         
         # Factor 4: Financial Need (20 points)
         assets = applicant_data.get('total_assets', 0)
@@ -155,13 +155,13 @@ class EligibilityCheckAgent(BaseAgent):
         eligibility_score = (eligibility_score / max_score) * 100
         
         # Determine eligibility decision
-        if eligibility_score >= 70:
+        if eligibility_score >= 80:
             decision = "APPROVED"
             confidence = "HIGH"
-        elif eligibility_score >= 50:
+        elif eligibility_score >= 70:
             decision = "APPROVED"
             confidence = "MEDIUM"
-        elif eligibility_score >= 30:
+        elif eligibility_score > 60:
             decision = "UNDER_REVIEW"
             confidence = "LOW"
         else:
@@ -214,6 +214,7 @@ class EligibilityCheckAgent(BaseAgent):
 You are an empathetic social support case officer explaining an eligibility decision.
 
 Applicant Profile:
+- Applicant Name: {applicant_data.get('name', 'Applicant')}
 - Monthly Income: AED {applicant_data.get('monthly_income', 0):,.2f}
 - Family Size: {applicant_data.get('family_size', 1)}
 - Employment: {applicant_data.get('employment_status', 'unknown')}
