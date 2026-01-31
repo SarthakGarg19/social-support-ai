@@ -205,30 +205,87 @@ class DataExtractionAgent(BaseAgent):
             return result
     
     def _extract_bank_statement(self, file_path: str) -> Dict[str, Any]:
-        """Extract data from bank statement PDF."""
+        """Extract data from bank statement PDF.
+        
+        Extracts:
+        - Salary deposits with amounts
+        - Freelance income with amounts
+        - Monthly income calculation
+        - Transaction details with dates and balances
+        
+        Pattern: Date Description +/-Amount Balance
+        Example: 05-Jan-2026 Salary Deposit +11,000.00 56,000.00
+        """
         text = self._extract_pdf_text(file_path)
         
-        # Extract key information using regex patterns
-        # (In production, use more sophisticated NLP/LLM extraction)
+        # Initialize tracking
+        salary_deposits = []
+        freelance_income = []
+        all_transactions = []
         
-        # Mock extraction for prototype
-        transactions = []
-        monthly_income = 0.0
+        # Split text into lines for better pattern matching
+        lines = text.split('\n')
         
-        # Simple pattern matching for amounts
-        amounts = re.findall(r'AED\s*([\d,]+\.?\d*)', text)
-        if amounts:
-            amounts = [float(a.replace(',', '')) for a in amounts]
-            # Assume positive large amounts are income
-            income_transactions = [a for a in amounts if a > 1000]
-            if income_transactions:
-                monthly_income = sum(income_transactions) / len(income_transactions)
+        # Primary pattern: Date Description +/-Amount Balance
+        # Matches: 05-Jan-2026 Salary Deposit +11,000.00 56,000.00
+        transaction_pattern = r'(\d{2}-\w+-\d{4})\s+(.+?)\s+([+-][\d,]+\.?\d*)\s+([\d,]+\.?\d*)'
+        
+        for line in lines:
+            # Try to match transaction line with primary pattern
+            match = re.search(transaction_pattern, line)
+            if match:
+                date = match.group(1)
+                description = match.group(2).strip()
+                amount_str = match.group(3)
+                balance_str = match.group(4)
+                
+                try:
+                    # Extract amount (remove +/- prefix and commas)
+                    amount = float(amount_str.replace('+', '').replace(',', ''))
+                    balance = float(balance_str.replace(',', ''))
+                    
+                    # Only track positive amounts (income)
+                    if amount > 0:
+                        transaction = {
+                            'date': date,
+                            'description': description,
+                            'amount': amount,
+                            'balance': balance
+                        }
+                        all_transactions.append(transaction)
+                        
+                        # Check if it's salary deposit
+                        desc_lower = description.lower()
+                        if any(kw in desc_lower for kw in ['salary', 'salary deposit', 'payroll', 'monthly salary', 'salary payment']):
+                            salary_deposits.append(amount)
+                        
+                        # Check if it's freelance income
+                        elif any(kw in desc_lower for kw in ['freelance', 'freelance income', 'contract', 'freelance payment', 'project']):
+                            freelance_income.append(amount)
+                
+                except ValueError:
+                    # Skip lines that can't be parsed as numbers
+                    continue
+        
+        # Calculate totals
+        total_salary = sum(salary_deposits) if salary_deposits else 0.0
+        total_freelance = sum(freelance_income) if freelance_income else 0.0
+        total_income = total_salary + total_freelance
         
         return {
             'raw_text': text,
-            'monthly_income': monthly_income,
-            'transaction_count': len(amounts),
-            'summary': f'Extracted {len(amounts)} transactions, avg income: AED {monthly_income:.2f}'
+            'monthly_income': float(total_income),
+            'salary_deposits': float(total_salary),
+            'salary_deposit_count': len(salary_deposits),
+            'salary_deposit_list': salary_deposits,
+            'freelance_income': float(total_freelance),
+            'freelance_income_count': len(freelance_income),
+            'freelance_income_list': freelance_income,
+            'total_transactions': len(all_transactions),
+            'transactions': all_transactions[:15],  # Return first 15 transactions
+            'summary': f'Salary: AED {total_salary:,.2f} ({len(salary_deposits)} deposits), '
+                      f'Freelance: AED {total_freelance:,.2f} ({len(freelance_income)} income), '
+                      f'Total Monthly Income: AED {total_income:,.2f}'
         }
     
     def _extract_emirates_id(self, file_path: str) -> Dict[str, Any]:

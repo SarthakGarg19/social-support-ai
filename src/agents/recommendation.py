@@ -235,6 +235,7 @@ class RecommendationAgent(BaseAgent):
 You are a compassionate career counselor for a government social support program.
 
 Applicant Profile:
+- Applicant Name: {applicant_data.get('name', 'Unknown')}
 - Employment Status: {applicant_data.get('employment_status', 'unknown')}
 - Monthly Income: AED {applicant_data.get('monthly_income', 0):,.2f}
 - Family Size: {applicant_data.get('family_size', 1)}

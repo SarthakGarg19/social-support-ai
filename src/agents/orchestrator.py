@@ -34,6 +34,7 @@ class WorkflowState(TypedDict):
     LangGraph manages the state transitions automatically.
     """
     applicant_id: str
+    applicant_name: str
     applicant_data: Dict[str, Any]
     documents: List[Dict[str, Any]]
     extracted_data: Dict[str, Any]
@@ -391,6 +392,7 @@ class OrchestratorAgent(BaseAgent):
         # Compile final decision
         final_decision = {
             'applicant_id': state['applicant_id'],
+            'applicant_name': state['applicant_data'].get('name', 'Unknown'),
             'eligibility_score': state['eligibility_results'].get('eligibility_score', 0),
             'decision': state['eligibility_results'].get('decision', 'PENDING'),
             'reasoning': state['eligibility_results'].get('explanation', ''),
@@ -473,6 +475,7 @@ class OrchestratorAgent(BaseAgent):
         # Initialize workflow state
         initial_state: WorkflowState = {
             'applicant_id': applicant_id,
+            'applicant_name': applicant_data.get('name', 'Unknown'),
             'applicant_data': applicant_data,
             'documents': documents,
             'extracted_data': {},
@@ -529,7 +532,7 @@ class OrchestratorAgent(BaseAgent):
             }
 
 
-    def export_stategraph_mermaid(self, output_path: str = "docs/stategraph.mmd") -> str:
+    def export_stategraph_mermaid(self) -> str:
         """
         Export the LangGraph workflow as a Mermaid diagram.
         
@@ -539,44 +542,15 @@ class OrchestratorAgent(BaseAgent):
         Returns:
             Path to the saved file
         """
-        from pathlib import Path
-        
-        mermaid_code = """graph TD
-    Start([START]) --> A[Extract Documents]
-    A --> B[Validate Data]
-    B --> C{Validation Check}
-    C -->|Sufficient Data| D[Check Eligibility]
-    C -->|Insufficient Data| End1([END - Insufficient Data])
-    D --> E[Generate Recommendations]
-    E --> F[Finalize Decision]
-    F --> End2([END - Complete])
-    
-    style Start fill:#90EE90
-    style End1 fill:#FFB6C1
-    style End2 fill:#90EE90
-    style A fill:#87CEEB
-    style B fill:#87CEEB
-    style C fill:#FFD700
-    style D fill:#87CEEB
-    style E fill:#87CEEB
-    style F fill:#87CEEB
-    
-    classDef agent fill:#87CEEB,stroke:#333,stroke-width:2px
-    classDef decision fill:#FFD700,stroke:#333,stroke-width:2px
-    classDef terminal fill:#90EE90,stroke:#333,stroke-width:2px
-"""
-        
-        # Ensure directory exists
-        output_file = Path(output_path)
-        output_file.parent.mkdir(parents=True, exist_ok=True)
-        
-        # Write to file
-        with open(output_file, 'w') as f:
-            f.write(mermaid_code)
-        
-        print(f"✓ Workflow graph exported to: {output_path}")
-        return str(output_file)
 
+        png_data = self.workflow.get_graph().draw_mermaid_png()
+        output_filename = "docs/stategraph_mermaid_output.png"
+        try:
+            with open(output_filename, 'wb') as f:
+                f.write(png_data)
+            print(f"Image successfully saved to {output_filename}")
+        except IOError as e:
+            print(f"Error saving image: {e}")
 
 # Global orchestrator instance
 orchestrator = OrchestratorAgent()
