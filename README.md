@@ -133,8 +133,7 @@ social-support-ai/
 │   │   ├── eligibility_check.py
 │   │   └── recommendation.py
 │   ├── database/             # 💾 Data storage
-│   │   ├── sqlite_db.py      # SQLite manager
-│   │   └── vector_store.py   # ChromaDB manager
+│   │   └── sqlite_db.py      # SQLite manager
 │   └── config.py             # Configuration
 ├── data/                     # Data storage
 │   ├── uploads/              # Uploaded documents

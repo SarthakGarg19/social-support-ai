@@ -14,8 +14,8 @@ from typing import Dict, Any, List, Optional
 import ollama
 
 from .base_agent import BaseAgent, AgentState, AgentResponse
-from ..database import db_manager, vector_store
-from ..config import settings
+from ..database import db_manager
+from ..config import settings, ELIGIBILITY_CRITERIA
 from ..utils import log_agent_execution
 
 
@@ -125,8 +125,13 @@ class DataValidationAgent(BaseAgent):
             if income < 0:
                 validation_results['issues'].append("Monthly income cannot be negative")
                 validation_results['is_valid'] = False
+
+            elif income > ELIGIBILITY_CRITERIA['max_income_threshold']:
+                validation_results['warnings'].append("Monthly income exceeds typical threshold")
+
             elif income > 1000000:
                 validation_results['warnings'].append("Unusually high monthly income")
+                validation_results['is_valid'] = False
         
         if 'credit_score' in extracted_data:
             score = extracted_data['credit_score']
@@ -161,9 +166,9 @@ class DataValidationAgent(BaseAgent):
             validation_results['issues'].append(
                 f"Insufficient data: only {validation_results['completeness_score']*100:.0f}% complete"
             )
-        else:
-            # Allow processing with warnings if at least 50% of data is present
-            validation_results['is_valid'] = True
+        # else:
+        #     # Allow processing with warnings if at least 50% of data is present
+        #     validation_results['is_valid'] = True
         
         # Log to Langfuse
         applicant_id = state.context.get('applicant_id', 'unknown')

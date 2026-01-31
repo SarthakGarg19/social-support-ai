@@ -20,7 +20,7 @@ from pathlib import Path
 import re
 
 from .base_agent import BaseAgent, AgentState, AgentResponse
-from ..database import db_manager, vector_store
+from ..database import db_manager
 from ..utils import log_agent_execution
 
 
@@ -143,17 +143,6 @@ class DataExtractionAgent(BaseAgent):
                 'validation_status': 'pending'
             })
             
-            # Store embeddings for semantic search
-            if extracted_data.get('raw_text'):
-                vector_store.add_document(
-                    doc_id=doc_id,
-                    text=extracted_data['raw_text'],
-                    metadata={
-                        'applicant_id': applicant_id,
-                        'doc_type': doc_type,
-                        'doc_id': doc_id
-                    }
-                )
             
             result = {
                 'action': 'extract_document',

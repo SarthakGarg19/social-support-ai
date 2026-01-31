@@ -16,7 +16,7 @@ import ollama
 import numpy as np
 
 from .base_agent import BaseAgent, AgentState, AgentResponse
-from ..database import db_manager, vector_store
+from ..database import db_manager
 from ..config import settings, ELIGIBILITY_CRITERIA
 from ..utils import log_eligibility_decision
 
@@ -60,8 +60,6 @@ class EligibilityCheckAgent(BaseAgent):
         employment status {applicant_data.get('employment_status', 'unknown')}
         """
         
-        relevant_rules = vector_store.query_knowledge_base(knowledge_query, n_results=3)
-        
         reasoning = f"""
         Eligibility Assessment for Applicant:
         
@@ -78,9 +76,6 @@ class EligibilityCheckAgent(BaseAgent):
         2. Minimum Credit Score: {ELIGIBILITY_CRITERIA['credit_score_minimum']}
         3. Asset-Liability Ratio Threshold: {ELIGIBILITY_CRITERIA['asset_liability_ratio_threshold']}
         4. Family Size Consideration: {ELIGIBILITY_CRITERIA['min_family_size_for_bonus']}+ gets priority
-        
-        Relevant Policies:
-        {self._format_rules(relevant_rules)}
         
         Proceeding with multi-factor eligibility calculation...
         """

@@ -13,8 +13,8 @@ Uses ReAct pattern with LLM for personalized recommendations.
 from typing import Dict, Any, List
 import ollama
 
+from ..database import db_manager
 from .base_agent import BaseAgent, AgentState, AgentResponse
-from ..database import db_manager, vector_store
 from ..config import settings, ENABLEMENT_PROGRAMS
 from ..utils import log_agent_execution
 
@@ -58,9 +58,7 @@ class RecommendationAgent(BaseAgent):
         Economic enablement programs for {applicant_data.get('employment_status', 'unknown')} 
         applicant with family size {applicant_data.get('family_size', 1)}
         """
-        
-        relevant_programs = vector_store.query_knowledge_base(query, n_results=3)
-        
+            
         reasoning = f"""
         Recommendation Analysis for Applicant:
         
@@ -95,10 +93,6 @@ class RecommendationAgent(BaseAgent):
             """
         
         reasoning += f"""
-        
-        Available Programs from Knowledge Base:
-        {self._format_programs(relevant_programs)}
-        
         Generating personalized recommendations using LLM...
         """
         

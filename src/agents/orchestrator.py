@@ -271,8 +271,8 @@ class OrchestratorAgent(BaseAgent):
         if validation_results.get('requires_user_action', False):
             print("\n[ORCHESTRATOR] ⚠️  User action required - ending workflow early")
             return "end"
-        # Proceed if validation passed or has any reasonable data (30%+)
-        if validation_results.get('is_valid', False) or validation_results.get('completeness_score', 0) >= 0.3:
+        # Proceed only if validation passed
+        if validation_results.get('is_valid', False):
             return "proceed"
         else:
             print("\n[ORCHESTRATOR] ⚠️  Insufficient data - ending workflow early")

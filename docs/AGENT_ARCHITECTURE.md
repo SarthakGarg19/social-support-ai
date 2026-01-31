@@ -167,14 +167,6 @@ Total Score = Income Score (30%)
 - **Adjustable**: Weights can be tuned
 - **Explainable**: LLM generates human-readable reasoning
 
-**Integration with Knowledge Base:**
-```python
-# Query vector store for relevant policies
-relevant_rules = vector_store.query_knowledge_base(
-    query=f"Eligibility for income {income}, family size {family_size}"
-)
-```
-
 This allows the agent to:
 - Stay updated with policy changes
 - Apply contextual rules
