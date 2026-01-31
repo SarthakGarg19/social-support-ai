@@ -7,9 +7,9 @@
   "employment": {
     "position": "Operations Manager",
     "company": "DP World",
-    "monthly_salary": 12500,
-    "freelance_income": 3000,
-    "total_monthly_income": 15500,
+    "monthly_salary": 42500,
+    "freelance_income": 13000,
+    "total_monthly_income": 55500,
     "employment_status": "Employed",
     "years_experience": 9
   },
@@ -28,7 +28,7 @@
   },
   "eligibility": {
     "income_eligible": false,
-    "notes": "Monthly income: AED 15,500"
+    "notes": "Monthly income: AED 55,500"
   },
   "documents": [
     "bank_statement.pdf",
@@ -37,5 +37,5 @@
     "assets_liabilities.xlsx",
     "emirates_id.png"
   ],
-  "generated_at": "2026-01-28T00:17:15.682587"
+  "generated_at": "2026-01-31T21:56:53.938601"
 }
