@@ -18,7 +18,7 @@ ollama pull llama3.2
 
 ```bash
 # Navigate to project directory
-cd "c:\Users\Sarthak\OneDrive\Desktop\Resume, Work and Policies\DGE Assignment\social-support-ai"
+cd "<your_path>\social-support-ai"
 
 # Run Streamlit
 streamlit run src/ui/streamlit_app.py
@@ -59,9 +59,7 @@ Upload any combination of:
 
 ### 📈 Workflow Visualization
 - Click "Export Workflow Graph" to save the LangGraph workflow
-- File saved to: `docs/stategraph.mmd`
-- Can be visualized using Mermaid tools
-
+  
 ---
 
 ## Workflow Behind the Scenes
@@ -74,10 +72,11 @@ START
 1. Data Extraction Agent
    - Extracts text from PDFs
    - Parses Excel files
-   - OCR for images
+   - Parses Docx files
+   - OCR for images (TBD)
    ↓
 2. Data Validation Agent
-   - Checks completeness (80%+ required)
+   - Checks completeness (50%+ required)
    - Validates ranges
    - LLM semantic validation
    ↓
@@ -111,8 +110,8 @@ Use the demo data generator or create your own:
 - Email: applicant@example.com
 
 **Create Sample Documents:**
-```bash
-python -c "from demo import create_sample_documents; create_sample_documents()"
+```
+python generate_synthetic_data.py"
 ```
 
 Then upload the files from `data/synthetic/` folder.
