@@ -21,8 +21,6 @@ import re
 
 from .base_agent import BaseAgent, AgentState, AgentResponse
 from ..database import db_manager
-from ..utils import log_agent_execution
-
 
 class DataExtractionAgent(BaseAgent):
     """
@@ -151,24 +149,8 @@ class DataExtractionAgent(BaseAgent):
                 'extracted_data': extracted_data,
                 'doc_type': doc_type
             }
-            
-            # Log extraction to Langfuse
-            try:
-                log_agent_execution(
-                    agent_name=self.name,
-                    applicant_id=applicant_id,
-                    stage=f'extraction_{doc_type}',
-                    input_data={'doc_type': doc_type, 'file_path': file_path},
-                    output_data=extracted_data,
-                    success=True,
-                    error=None
-                )
-            except Exception as log_err:
-                # Langfuse logging should not fail the workflow
-                pass
-            
             return result
-            
+        
         except Exception as e:
             result = {
                 'action': 'extract_document',
@@ -176,21 +158,6 @@ class DataExtractionAgent(BaseAgent):
                 'error': str(e),
                 'doc_type': doc_type
             }
-            
-            # Log extraction failure to Langfuse
-            try:
-                log_agent_execution(
-                    agent_name=self.name,
-                    applicant_id=applicant_id,
-                    stage=f'extraction_{doc_type}',
-                    input_data={'doc_type': doc_type, 'file_path': file_path},
-                    output_data=None,
-                    success=False,
-                    error=str(e)
-                )
-            except Exception as log_err:
-                pass
-            
             return result
     
     def _extract_bank_statement(self, file_path: str) -> Dict[str, Any]:

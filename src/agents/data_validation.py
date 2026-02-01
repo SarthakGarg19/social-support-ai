@@ -16,7 +16,6 @@ import ollama
 from .base_agent import BaseAgent, AgentState, AgentResponse
 from ..database import db_manager
 from ..config import settings, ELIGIBILITY_CRITERIA
-from ..utils import log_agent_execution
 
 
 class DataValidationAgent(BaseAgent):
@@ -169,18 +168,6 @@ class DataValidationAgent(BaseAgent):
         # else:
         #     # Allow processing with warnings if at least 50% of data is present
         #     validation_results['is_valid'] = True
-        
-        # Log to Langfuse
-        applicant_id = state.context.get('applicant_id', 'unknown')
-        log_agent_execution(
-            agent_name=self.name,
-            applicant_id=applicant_id,
-            stage='validation',
-            input_data=extracted_data,
-            output_data=validation_results,
-            success=validation_results['is_valid'],
-            error=None if validation_results['is_valid'] else ' | '.join(validation_results['issues'])
-        )
         
         return {
             'action': 'validate_data',

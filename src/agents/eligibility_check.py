@@ -18,7 +18,6 @@ import numpy as np
 from .base_agent import BaseAgent, AgentState, AgentResponse
 from ..database import db_manager
 from ..config import settings, ELIGIBILITY_CRITERIA
-from ..utils import log_eligibility_decision
 
 
 class EligibilityCheckAgent(BaseAgent):
@@ -185,28 +184,6 @@ class EligibilityCheckAgent(BaseAgent):
             'factors': factors,
             'explanation': llm_explanation
         }
-        
-        # Log eligibility decision to Langfuse
-        applicant_id = state.context.get('applicant_id', 'unknown')
-        try:
-            from ..utils import log_eligibility_decision
-            log_eligibility_decision(
-                applicant_id=applicant_id,
-                decision=decision,
-                reasoning=llm_explanation,
-                scores={
-                    'eligibility_score': round(eligibility_score, 2),
-                    'income_score': factors[0],
-                    'employment_score': factors[1],
-                    'family_score': factors[2],
-                    'financial_score': factors[3],
-                    'credit_score': factors[4],
-                    'confidence': confidence
-                }
-            )
-        except Exception as e:
-            # Langfuse logging should not fail the workflow
-            pass
         
         return result
     

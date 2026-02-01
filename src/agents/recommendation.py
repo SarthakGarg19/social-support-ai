@@ -16,7 +16,6 @@ import ollama
 from ..database import db_manager
 from .base_agent import BaseAgent, AgentState, AgentResponse
 from ..config import settings, ENABLEMENT_PROGRAMS
-from ..utils import log_agent_execution
 
 
 class RecommendationAgent(BaseAgent):
@@ -189,29 +188,6 @@ class RecommendationAgent(BaseAgent):
             'recommendations': recommendations,
             'total_programs': len(recommendations['priority_programs'])
         }
-        
-        # Log recommendations to Langfuse
-        try:
-            log_agent_execution(
-                agent_name=self.name,
-                applicant_id=applicant_id,
-                stage='recommendation',
-                input_data={
-                    'employment_status': employment_status,
-                    'monthly_income': monthly_income,
-                    'eligibility_result': eligibility_result
-                },
-                output_data={
-                    'recommendations_count': len(recommendations['priority_programs']),
-                    'priority_programs': recommendations['priority_programs'],
-                    'next_steps': recommendations.get('next_steps', [])
-                },
-                success=True,
-                error=None
-            )
-        except Exception as e:
-            # Langfuse logging should not fail the workflow
-            pass
         
         return result
     

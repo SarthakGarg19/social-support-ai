@@ -22,8 +22,6 @@ from .data_validation import data_validation_agent
 from .eligibility_check import eligibility_check_agent
 from .recommendation import recommendation_agent
 from ..database import db_manager
-from ..utils import log_workflow_state, flush_langfuse
-
 
 # Define the state structure for the workflow
 class WorkflowState(TypedDict):
@@ -427,24 +425,6 @@ class OrchestratorAgent(BaseAgent):
                 {'final_decision': final_decision}
             )
             
-            # Log workflow completion to Langfuse
-            try:
-                log_workflow_state(
-                    applicant_id=state['applicant_id'],
-                    workflow_stage='completed',
-                    stage_data={
-                        'final_decision': final_decision['decision'],
-                        'eligibility_score': final_decision['eligibility_score'],
-                        'recommendation_count': len(state['recommendations']),
-                        'workflow_errors': len(state.get('errors', []))
-                    }
-                )
-                # Flush all pending traces to Langfuse
-                flush_langfuse()
-            except Exception as log_err:
-                # Langfuse logging should not fail the workflow
-                pass
-            
         except Exception as e:
             error_msg = f"Failed to save assessment: {str(e)}"
             state['errors'].append(error_msg)
@@ -493,20 +473,6 @@ class OrchestratorAgent(BaseAgent):
                 'workflow_version': '1.0'
             }
         }
-        
-        # Log workflow initiation to Langfuse
-        try:
-            log_workflow_state(
-                applicant_id=applicant_id,
-                workflow_stage='initiated',
-                stage_data={
-                    'documents_count': len(documents),
-                    'applicant_data_keys': list(applicant_data.keys())
-                }
-            )
-        except Exception as log_err:
-            # Langfuse logging should not fail the workflow
-            pass
         
         # Run the workflow
         try:

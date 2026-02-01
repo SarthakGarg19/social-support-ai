@@ -398,8 +398,6 @@ rm -rf data/chroma_db
 ## 📝 Future Enhancements
 
 - [ ] FastAPI REST API
-- [ ] Streamlit Chat UI
-- [ ] Langfuse observability integration
 - [ ] ML classifier for eligibility scoring
 - [ ] Real OCR for Emirates ID
 - [ ] Production database (PostgreSQL)

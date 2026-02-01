@@ -445,18 +445,6 @@ db_manager.update_workflow_state(
 
 ### Production Enhancement: Langfuse
 
-**Integration Point:**
-```python
-from langfuse import Langfuse
-
-langfuse = Langfuse()
-
-@langfuse.trace
-def agent_execute(...):
-    # Automatic tracing
-    pass
-```
-
 **Visibility:**
 - Token usage per agent
 - Latency breakdown

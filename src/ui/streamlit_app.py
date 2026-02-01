@@ -22,14 +22,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from src.agents import orchestrator
 from src.database import db_manager
 from src.config import settings
-from src.utils import init_langfuse
 import ollama
 
 # Ensure directories exist
 settings.ensure_directories()
-
-# Initialize Langfuse for observability
-init_langfuse()
 
 # Page config
 st.set_page_config(
