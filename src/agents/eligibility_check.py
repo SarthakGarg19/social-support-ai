@@ -17,7 +17,7 @@ import numpy as np
 
 from .base_agent import BaseAgent, AgentState, AgentResponse
 from ..database import db_manager
-from ..config import settings, ELIGIBILITY_CRITERIA
+from ..config import settings, ELIGIBILITY_CRITERIA, ollama_cloud_run
 
 
 class EligibilityCheckAgent(BaseAgent):
@@ -214,13 +214,19 @@ credit scores: {ELIGIBILITY_CRITERIA.get('credit_score_minimum', "0")}.
 Write a brief, compassionate explanation (2-3 sentences) for this decision based on the context that the applicant can understand.
 Focus on the key factors that influenced the decision.
 """
-            
-            response = ollama.generate(
-                model=settings.ollama_model,
-                prompt=prompt
-            )
-            
-            return response['response']
+            if settings.use_ollama_cloud:
+                # print(f"\n[PROMPT to Ollama Cloud LLM]: {prompt}\n")
+                response = ollama_cloud_run(prompt)
+                # print(f"\n[Ollama Cloud LLM Response]: {response}\n")
+                
+                return response
+            else:
+                response = ollama.generate(
+                    model=settings.ollama_model,
+                    prompt=prompt
+                )
+                
+                return response['response']
             
         except Exception as e:
             # Fallback explanation

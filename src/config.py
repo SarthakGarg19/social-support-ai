@@ -30,9 +30,15 @@ class Settings:
     """
     
     def __init__(self):
+        # Ollama Online Configuration
+        self.use_ollama_cloud = os.getenv("USE_OLLAMA_CLOUD", "False").lower() == "true"
+
         # Ollama LLM Configuration
         self.ollama_base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
         self.ollama_model = os.getenv("OLLAMA_MODEL", "llama3.2")
+
+        self.ollama_cloud_api_key = os.getenv("OLLAMA_CLOUD_API_KEY", "")
+        self.ollama_cloud_model = os.getenv("OLLAMA_CLOUD_MODEL", "gpt-oss:20b-cloud")
         
         # Database Configuration
         self.sqlite_db_path = os.getenv("SQLITE_DB_PATH", "./data/social_support.db")
@@ -96,3 +102,19 @@ ENABLEMENT_PROGRAMS = {
         "Interview Preparation Session"
     ]
 }
+
+def ollama_cloud_run(prompt: str) -> str:
+    import ollama
+    client = ollama.Client(
+    host="https://ollama.com",
+    headers={'Authorization': 'Bearer ' + settings.ollama_cloud_api_key}
+    )
+    messages = [
+        {
+            'role': 'user',
+            'content': prompt,
+        },
+    ]
+
+    response = client.chat(settings.ollama_cloud_model, messages=messages)
+    return response['message']['content']

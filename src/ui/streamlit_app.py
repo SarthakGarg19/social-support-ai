@@ -21,7 +21,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from src.agents import orchestrator
 from src.database import db_manager
-from src.config import settings
+from src.config import ollama_cloud_run, settings
 import ollama
 
 # Ensure directories exist
@@ -52,20 +52,29 @@ if 'errors' not in st.session_state:
 def chat_with_llm(prompt):
     """Send a message to the local LLM for conversation."""
     try:
-        response = ollama.generate(
-            model=settings.ollama_model,
-            prompt=f"""You are a helpful AI assistant for a government social support application system.
+        prompt = f"""You are a helpful AI assistant for a government social support application system.
             
-User message: {prompt}
+                        User message: {prompt}
 
-Provide a helpful, empathetic response. If the user asks about the application process, explain that they can:
-1. Upload required documents (bank statements, resume, Emirates ID, assets/liabilities, credit report)
-2. Fill in basic information
-3. Click "Process Application" to run the AI assessment
+                        Provide a helpful, empathetic response. If the user asks about the application process, explain that they can:
+                        1. Upload required documents (bank statements, resume, Emirates ID, assets/liabilities, credit report)
+                        2. Fill in basic information
+                        3. Click "Process Application" to run the AI assessment
 
-Keep responses brief and friendly."""
-        )
-        return response['response']
+                        Keep responses brief and friendly."""
+        if settings.use_ollama_cloud:
+            # print(f"\n[PROMPT to Ollama Cloud LLM]: {prompt}\n")
+            response = ollama_cloud_run(prompt)
+            # print(f"\n[Ollama Cloud LLM Response]: {response}\n")
+            
+            return response
+        else:
+            response = ollama.generate(
+                model=settings.ollama_model,
+                prompt=prompt
+            )
+
+            return response['response']
     except Exception as e:
         return f"I'm having trouble connecting to the AI model. Please ensure Ollama is running with the llama3.2 model. Error: {str(e)}"
 

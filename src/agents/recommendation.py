@@ -15,7 +15,7 @@ import ollama
 
 from ..database import db_manager
 from .base_agent import BaseAgent, AgentState, AgentResponse
-from ..config import settings, ENABLEMENT_PROGRAMS
+from ..config import ollama_cloud_run, settings, ENABLEMENT_PROGRAMS
 
 
 class RecommendationAgent(BaseAgent):
@@ -202,33 +202,39 @@ class RecommendationAgent(BaseAgent):
         """
         try:
             prompt = f"""
-You are a compassionate career counselor named {self.name} for a government social support program.
+                    You are a compassionate career counselor named {self.name} for a government social support program.
 
-Applicant Profile:
-- Applicant Name: {applicant_data.get('applicant_name', 'Unknown')}
-- Employment Status: {applicant_data.get('employment_status', 'unknown')}
-- Monthly Income: AED {applicant_data.get('monthly_income', 0):,.2f}
-- Family Size: {applicant_data.get('family_size', 1)}
-- Eligibility Decision: {eligibility_result.get('decision', 'PENDING')}
+                    Applicant Profile:
+                    - Applicant Name: {applicant_data.get('applicant_name', 'Unknown')}
+                    - Employment Status: {applicant_data.get('employment_status', 'unknown')}
+                    - Monthly Income: AED {applicant_data.get('monthly_income', 0):,.2f}
+                    - Family Size: {applicant_data.get('family_size', 1)}
+                    - Eligibility Decision: {eligibility_result.get('decision', 'PENDING')}
 
-Recommended Programs:
-{self._format_recommendations_for_llm(recommendations)}
+                    Recommended Programs:
+                    {self._format_recommendations_for_llm(recommendations)}
 
-Write a personalized, encouraging message (3-4 sentences) that:
-1. Acknowledges the applicant's situation
-2. Highlights the most relevant programs
-3. Motivates them to take action
-4. Provides hope and support
+                    Write a personalized, encouraging message (3-4 sentences) that:
+                    1. Acknowledges the applicant's situation
+                    2. Highlights the most relevant programs
+                    3. Motivates them to take action
+                    4. Provides hope and support
 
-Be empathetic and practical.
-"""
-            
-            response = ollama.generate(
-                model=settings.ollama_model,
-                prompt=prompt
-            )
-            
-            return response['response']
+                    Be empathetic and practical.
+                    """
+            if settings.use_ollama_cloud:
+                # print(f"\n[PROMPT to Ollama Cloud LLM]: {prompt}\n")
+                response = ollama_cloud_run(prompt)
+                # print(f"\n[Ollama Cloud LLM Response]: {response}\n")
+
+                return response
+            else:
+                response = ollama.generate(
+                    model=settings.ollama_model,
+                    prompt=prompt
+                )
+                
+                return response['response']
             
         except Exception as e:
             # Fallback message

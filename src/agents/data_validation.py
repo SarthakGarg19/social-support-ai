@@ -15,8 +15,7 @@ import ollama
 
 from .base_agent import BaseAgent, AgentState, AgentResponse
 from ..database import db_manager
-from ..config import settings, ELIGIBILITY_CRITERIA
-
+from ..config import ollama_cloud_run, settings, ELIGIBILITY_CRITERIA
 
 class DataValidationAgent(BaseAgent):
     """
@@ -184,29 +183,34 @@ class DataValidationAgent(BaseAgent):
         try:
             # Prepare prompt for LLM
             prompt = f"""
-You are a data validation expert for a social support application system.
+                    You are a data validation expert for a social support application system.
 
-Review the following extracted applicant data and identify any inconsistencies, anomalies, or concerns:
+                    Review the following extracted applicant data and identify any inconsistencies, anomalies, or concerns:
 
-Data:
-{self._format_data_for_llm(extracted_data)}
+                    Data:
+                    {self._format_data_for_llm(extracted_data)}
 
-Provide a brief validation assessment covering:
-1. Data consistency
-2. Any red flags or anomalies
-3. Data quality assessment
-4. Recommendations for missing information
+                    Provide a brief validation assessment covering:
+                    1. Data consistency
+                    2. Any red flags or anomalies
+                    3. Data quality assessment
+                    4. Recommendations for missing information
 
-Keep your response concise (2-3 sentences).
-"""
-            
-            # Call local Ollama LLM
-            response = ollama.generate(
-                model=settings.ollama_model,
-                prompt=prompt
-            )
-            
-            return response['response']
+                    Keep your response concise (2-3 sentences).
+                    """
+            if settings.use_ollama_cloud:
+                # print(f"\n[PROMPT to Ollama Cloud LLM]: {prompt}\n")
+                response = ollama_cloud_run(prompt)
+
+                return response
+            else:
+                # Call local Ollama LLM
+                response = ollama.generate(
+                    model=settings.ollama_model,
+                    prompt=prompt
+                )
+                
+                return response['response']
             
         except Exception as e:
             return f"LLM validation unavailable: {str(e)}"

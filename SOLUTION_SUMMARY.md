@@ -126,7 +126,7 @@ APPLICANT SUBMISSION
          ▼
 ┌──────────────────────────────────────────────┐
 │  NODE 2: DATA VALIDATION AGENT               │
-│  ├─ Check data completeness (80%+ required) │
+│  ├─ Check data completeness (50%+ required) │
 │  ├─ Validate value ranges                   │
 │  ├─ Cross-document consistency check        │
 │  └─ LLM semantic validation                 │

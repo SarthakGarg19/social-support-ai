@@ -21,6 +21,7 @@ import re
 
 from .base_agent import BaseAgent, AgentState, AgentResponse
 from ..database import db_manager
+from ..config import settings, ollama_cloud_run
 
 class DataExtractionAgent(BaseAgent):
     """
@@ -313,12 +314,20 @@ Resume text:
 
 Respond ONLY with a JSON object.
 """
-            response = ollama.generate(
-                model=settings.ollama_model,
-                prompt=prompt
-            )
-            import json
-            return json.loads(response['response'])
+            if settings.use_ollama_cloud:
+                # print(f"\n[PROMPT to Ollama Cloud LLM]: {prompt}\n")
+                response = ollama_cloud_run(prompt)
+                # print(f"\n[Ollama Cloud LLM Response]: {response}\n")
+                import json
+                return json.loads(response)
+            else:
+                response = ollama.generate(
+                    model=settings.ollama_model,
+                    prompt=prompt
+                )
+                import json
+                return json.loads(response['response'])
+                
         except Exception as e:
             return {
                 'employment_status': 'unknown',
