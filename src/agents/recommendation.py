@@ -266,7 +266,7 @@ Be empathetic and practical.
             formatted.append(
                 f"- {program['category']} (Priority: {program['priority']}): {', '.join(program['programs'])}"
             )
-        
+        print(f"\n[FORMATTED RECOMMENDATIONS]: {formatted}\n")
         return "\n".join(formatted) if formatted else "General support programs"
     
     def _create_next_steps(self, recommendations: Dict[str, Any]) -> List[str]:

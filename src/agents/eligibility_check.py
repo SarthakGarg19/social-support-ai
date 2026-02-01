@@ -106,9 +106,14 @@ class EligibilityCheckAgent(BaseAgent):
             income_score = 30 * (1 - (income / income_threshold))
             eligibility_score += income_score
             factors.append(f"Income Score: {income_score:.1f}/30 (Below threshold)")
-        else:
+        elif income_threshold < income < income_threshold * 1.2:
             factors.append(f"Income Score: 0/30 (Exceeds threshold of AED {income_threshold:,})")
-        
+        else:
+            # Income score will become negative for high incomes
+            income_score = 30 * (1 - (income / income_threshold))
+            eligibility_score += income_score
+            factors.append(f"Income Score: {income_score:.1f}/30 (Significantly exceeds threshold)")
+
         # Factor 2: Employment Status (20 points)
         employment = applicant_data.get('employment_status', 'unknown')
         employment_weights = ELIGIBILITY_CRITERIA['employment_weights']
