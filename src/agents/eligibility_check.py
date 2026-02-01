@@ -109,7 +109,7 @@ class EligibilityCheckAgent(BaseAgent):
             factors.append(f"Income Score: 0/30 (Exceeds threshold of AED {income_threshold:,})")
         else:
             # Income score will become negative for high incomes
-            income_score = 30 * (1 - (income / income_threshold))
+            income_score = 10 * (1 - (income / income_threshold))
             eligibility_score += income_score
             factors.append(f"Income Score: {income_score:.1f}/30 (Significantly exceeds threshold)")
 
@@ -205,7 +205,13 @@ Applicant Profile:
 Eligibility Score: {score:.1f}/100
 Decision: {decision}
 
-Write a brief, compassionate explanation (2-3 sentences) for this decision that the applicant can understand.
+For context, the eligibility criteria include: 
+income thresholds: {ELIGIBILITY_CRITERIA.get('max_income_threshold', "15000")}, 
+family size considerations: {ELIGIBILITY_CRITERIA.get('min_family_size_for_bonus', "3")},
+asset-liability ratios: {ELIGIBILITY_CRITERIA.get('asset_liability_ratio_threshold', 'N/A')}, and 
+credit scores: {ELIGIBILITY_CRITERIA.get('credit_score_minimum', "0")}.
+
+Write a brief, compassionate explanation (2-3 sentences) for this decision based on the context that the applicant can understand.
 Focus on the key factors that influenced the decision.
 """
             
