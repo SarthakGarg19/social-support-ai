@@ -52,15 +52,33 @@ if 'errors' not in st.session_state:
 def chat_with_llm(prompt):
     """Send a message to the local LLM for conversation."""
     try:
+        # Add chat history (last 10 messages) to the prompt for context
+        history = st.session_state.get('messages', [])[-10:]
+        history_text = "\n".join([
+            f"{msg['role'].capitalize()}: {msg['content']}" for msg in history if msg['role'] in ['user', 'assistant']
+        ])
         prompt = f"""You are a helpful AI assistant for a government social support application system.
-            
+
+                        Chat history:
+                        {history_text}
+
                         User message: {prompt}
 
                         Provide a helpful, empathetic response. If the user asks about the application process, explain that they can:
                         1. Upload required documents (bank statements, resume, Emirates ID, assets/liabilities, credit report)
                         2. Fill in basic information
-                        3. Click "Process Application" to run the AI assessment
-
+                        3. Click \"Process Application\" to run the AI assessment
+                        
+                        Please keep your response concise and relevant to social support applications."
+                        
+                        "DO NOT ANSWER ANYTHING OUT OF SCOPE RELATED TO SOCIAL SUPPORT APPLICATIONS."
+                        
+                        If the user asks about their application status, provide information based on the current state:
+    
+                        The applicant ID is {st.session_state.applicant_id}." or ""
+                        If user has any follow up questions, assist them accordingly based on the final decision below:
+                        "Final Decision: {st.session_state.decision if st.session_state.decision else 'N/A'}."
+                        
                         Keep responses brief and friendly."""
         if settings.use_ollama_cloud:
             # print(f"\n[PROMPT to Ollama Cloud LLM]: {prompt}\n")
