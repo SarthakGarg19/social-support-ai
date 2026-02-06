@@ -77,7 +77,6 @@ The **Social Support AI** system is a sophisticated multi-agent agentic applicat
 └──────────────┬────────────────────────────────┬──────────────┘
                │
                ├─── Ollama (Local LLM)
-               ├─── ChromaDB (Vector Store)
                └─── LangChain (Text Splitting & Embedding)
                
 ┌─────────────────────────────────────────────────────────────┐
@@ -86,7 +85,6 @@ The **Social Support AI** system is a sophisticated multi-agent agentic applicat
 └──────────────┬────────────────────────────────┬──────────────┘
                │
                ├─── SQLite (Structured Data)
-               ├─── ChromaDB (Embeddings)
                └─── File System (Documents)
 ```
 
@@ -150,8 +148,7 @@ APPLICANT SUBMISSION
 │  │  ├─ Employment (20 pts)                  │
 │  │  ├─ Family Size (20 pts)                 │
 │  │  ├─ Financial Need (20 pts)              │
-│  │  └─ Credit Score (10 pts)                │
-│  ├─ Query knowledge base via embeddings    │
+│  │  └─ Credit Score (10 pts)                │  │
 │  ├─ LLM generates decision explanation     │
 │  └─ Assign: APPROVED/UNDER_REVIEW/DECLINED │
 └────────┬─────────────────────────────────────┘
@@ -213,15 +210,15 @@ APPLICANT SUBMISSION
    ┌─────────────┐  ┌─────────────┐  ┌──────────────────┐
    │ LLM Agent   │  │ Knowledge   │  │ Data Processing  │
    │ (Ollama)    │  │ Base        │  │ (pypdf2, etc)    │
-   │             │  │ (ChromaDB)  │  │                  │
+   │             │  │             │  │                  │
    └──────┬──────┘  └──────┬──────┘  └────────┬─────────┘
           │                │                  │
           └────────────────┼──────────────────┘
                            │
                     ┌──────▼──────┐
                     │ Persistence │
-                    │  (SQLite +  │
-                    │  ChromaDB)  │
+                    │  (SQLite)   │
+                    │             │
                     └─────────────┘
 ```
 
@@ -427,15 +424,15 @@ STAGE 3: ELIGIBILITY CHECK
 │  │  └─ Query: "Based on these rules and scores, is applicant eligible?"
 │  │     └─ Returns: Decision + explanation
 │  └─ Decision Thresholds:
-│      ├─ 70-100 pts → APPROVED (High confidence)
-│      ├─ 50-69 pts  → APPROVED (Medium confidence)
-│      ├─ 30-49 pts  → UNDER_REVIEW (Borderline)
-│      └─ 0-29 pts   → DECLINED (Doesn't meet criteria)
+│      ├─ 80-100 pts → APPROVED (High confidence)
+│      ├─ 70-80 pts  → APPROVED (Medium confidence)
+│      ├─ 60-70 pts  → UNDER_REVIEW (Borderline)
+│      └─ 0-60 pts   → DECLINED (Doesn't meet criteria)
 ├─ Output:
 │         {
 │           'eligibility_score': 75,
 │           'decision': 'APPROVED',
-│           'confidence': 'HIGH',
+│           'confidence': 'MEDIUM',
 │           'explanation': 'Applicant meets income...'
 │         }
 └─ State: Saved to SQLite, tagged 'eligibility_complete'
@@ -564,7 +561,6 @@ STAGE 5: FINALIZE
 │      PERSISTENCE LAYER                          │
 ├────────────────────────────────────────────────┤
 │  • SQLite Database (Assessments, Workflows)    │
-│  • ChromaDB (Vector Store for Embeddings)     │
 │  • File System (Document Storage)              │
 │  • Database Manager (Query Interface)          │
 └────────────────────────────────────────────────┘
@@ -854,26 +850,6 @@ CREATE TABLE workflow_state (
   timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (applicant_id) REFERENCES assessments(applicant_id)
 );
-```
-
-#### **Embeddings (ChromaDB)**
-```
-Collections:
-- "social_support_policies" (Knowledge base documents)
-- "program_eligibility_rules" (Program matching knowledge)
-- "success_stories" (Example cases for context)
-
-Each embedding contains:
-{
-  'id': unique_id,
-  'document': text,
-  'embedding': [float array of 384 dimensions],
-  'metadata': {
-    'source': 'policy_manual_v1.0',
-    'category': 'income_thresholds',
-    'relevant_programs': ['job_training']
-  }
-}
 ```
 
 ---
@@ -1404,8 +1380,7 @@ The **Social Support AI** solution represents a modern approach to government se
 | Data Quality | 95%+ extraction accuracy |
 | Decision Transparency | 100% with LLM explanations |
 | System Availability | 99.5% uptime |
-| Scalability | 10K+ assessments/day |
-| Cost per Assessment | < $0.50 |
+| Scalability | 1K+ assessments/day |
 
 The solution is production-ready and provides a solid foundation for future enhancements including advanced ML, real-time collaboration, and deeper government system integration.
 
