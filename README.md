@@ -21,7 +21,6 @@ A multi-agent AI system that:
 ✅ **Multi-Agent System** - 5 specialized agents with ReAct pattern  
 ✅ **LangGraph Orchestration** - Stateful workflow management  
 ✅ **Multimodal Processing** - Text, images, and tabular data  
-✅ **Vector Search** - ChromaDB for semantic document retrieval  
 ✅ **Persistent Storage** - SQLite for structured data  
 
 ---
@@ -54,7 +53,6 @@ A multi-agent AI system that:
 | **Language** | Python 3.11+ | Core development |
 | **LLM** | Ollama (llama3.2) | Local language model |
 | **Orchestration** | LangGraph | Multi-agent workflow |
-| **Vector DB** | ChromaDB (persistent) | Document embeddings |
 | **Relational DB** | SQLite | Structured data |
 | **Document Processing** | PyPDF2, pdfplumber, openpyxl | Data extraction |
 | **ML** | scikit-learn | Classification |
@@ -192,16 +190,16 @@ social-support-ai/
 
 **Criteria:**
 - Income threshold (30 points)
-- Employment status (25 points)
-- Family size (15 points)
+- Employment status (20 points)
+- Family size (20 points)
 - Financial need (20 points)
 - Credit score (10 points)
 
 **Decision Thresholds:**
-- 70-100: APPROVED (High confidence)
-- 50-69: APPROVED (Medium confidence)
-- 30-49: UNDER_REVIEW
-- 0-29: DECLINED
+- 80-100: APPROVED (High confidence)
+- 70-80: APPROVED (Medium confidence)
+- 60-70: UNDER_REVIEW
+- 0-60: DECLINED
 
 ### 4. **Recommendation Agent**
 
@@ -351,7 +349,6 @@ WORKFLOW COMPLETE
 2. **Technical Sophistication**
    - Local LLM integration (Ollama)
    - Multimodal data processing
-   - Vector search for knowledge retrieval
    - Stateful workflow management
 
 3. **Practical Benefits**
