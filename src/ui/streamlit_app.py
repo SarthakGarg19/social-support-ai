@@ -79,6 +79,7 @@ def chat_with_llm(prompt):
                         If user has any follow up questions, assist them accordingly based on the final decision below:
                         "Final Decision: {st.session_state.decision if st.session_state.decision else 'N/A'}."
                         
+                        Here are the session state errors if any: {st.session_state.errors if st.session_state.errors else 'N/A'}.
                         Keep responses brief and friendly."""
         if settings.use_ollama_cloud:
             # print(f"\n[PROMPT to Ollama Cloud LLM]: {prompt}\n")
